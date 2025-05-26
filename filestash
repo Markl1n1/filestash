@@ -1,0 +1,14 @@
+FROM ubuntu:20.04
+
+# Install required packages: Docker, Docker Compose, and curl (to download the yml file)
+RUN apt-get update && apt-get install -y docker.io docker-compose curl
+
+# Create a working directory
+WORKDIR /app
+
+# Download the docker-compose.yml from your GitHub repository
+# Replace <your-username> and <your-repo> with your GitHub username and repository name
+RUN curl -L https://raw.githubusercontent.com/Markl1n1/filestash/main/docker-compose.yml -o docker-compose.yml
+
+# Start Docker service and run docker-compose
+CMD service docker start && docker-compose up -d
