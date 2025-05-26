@@ -1,14 +1,15 @@
-FROM ubuntu:20.04
+# Use an official Docker-in-Docker (DinD) image as the base to simplify Docker daemon setup
+FROM docker:20.10-dind
 
-# Install required packages: Docker, Docker Compose, and curl (to download the yml file)
-RUN apt-get update && apt-get install -y docker.io docker-compose curl
+# Install curl and docker-compose
+RUN apk add --no-cache curl docker-compose
 
 # Create a working directory
 WORKDIR /app
 
 # Download the docker-compose.yml from your GitHub repository
-# Replace <your-username> and <your-repo> with your GitHub username and repository name
 RUN curl -L https://raw.githubusercontent.com/Markl1n1/filestash/main/docker-compose.yml -o docker-compose.yml
 
-# Start Docker service and run docker-compose
-CMD service docker start && docker-compose up -d
+# Start the Docker daemon in the background and run docker-compose
+# The DinD image automatically starts the Docker daemon, but we ensure it’s running
+CMD dockerd & sleep 5 && docker-compose up -d
